@@ -580,7 +580,6 @@ ENA device (PCI 0000:00:05.0)
 Why skew happens
 
 One “elephant” flow maps to one RSS queue → one IRQ/CPU looks hot
-
 IRQ affinity / irqbalance / CPU pinning can concentrate many queues onto few CPUs
 
 Diagram 3: ENI-level skew (why one NIC is busier)
