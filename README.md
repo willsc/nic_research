@@ -174,7 +174,7 @@ chmod +x nic_mapping_report.sh
 ./nic_mapping_report.sh
 ./nic_mapping_report.sh --dest 1.1.1.1 --dest 8.8.8.8
 ./nic_mapping_report.sh --stats
-
+```
 #!/usr/bin/env bash
 set -euo pipefail
 
@@ -425,6 +425,8 @@ echo "Tip: If one NIC is disproportionately busy, compare:"
 echo " - ip route get <dest> (egress selection)"
 echo " - RSS queue histogram + /proc/interrupts (queue/IRQ skew)"
 echo " - IRQ affinity (smp_affinity_list) vs your CPU pinning/isolcpus"
+```
+
 7) What “open fabric layer” is (and when it matters)
 “Open fabric layer” usually refers to OpenFabrics Interfaces (OFI) / libfabric, and sometimes the broader OpenFabrics/RDMA stack.
 
