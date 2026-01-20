@@ -521,61 +521,62 @@ done
 ## 10) Diagrams: relationships and where skew happens
 Diagram 1: ENI → Linux → PCIe → Nitro → AWS fabric
 AWS CONTROL PLANE (VPC)
+```
 ┌─────────────────────────────────────────────┐
-│ ENI (eni-…) │
-│ - Subnet / SG / routes / IPs / MAC │
-│ - Attachment: DeviceIndex (0,1,2…) │
+│ ENI (eni-…)                                 │
+│ - Subnet / SG / routes / IPs / MAC          │
+│ - Attachment: DeviceIndex (0,1,2…)          │
 └───────────────────────┬─────────────────────┘
-│ attach
-v
+                        │ attach
+                        v
 ┌───────────────────────────────────────────────────────────────┐
-│ EC2 INSTANCE (your Linux OS) │
-│ │
-│ Linux netdev: ens5 / ens6 / ens7 │
-│ - Name from predictable naming (PCI topology) │
-│ - MAC/IP match the ENI │
-│ │ │
-│ v │
-│ ENA driver (ena.ko) │
-│ - multi-queue RX/TX rings │
-│ - RSS hashes flows → RX queue │
-│ │ │
-│ v │
-│ PCIe function (what you saw): │
-│ ens5 → 0000:00:05.0 ens6 → 0000:00:06.0 ens7 → 00:07.0 │
+│ EC2 INSTANCE (your Linux OS)                                  │
+│                                                               │
+│ Linux netdev: ens5 / ens6 / ens7                              │
+│ - Name from predictable naming (PCI topology)                 │
+│ - MAC/IP match the ENI                                        │
+│                        │                                      │
+│                        v                                      │
+│ ENA driver (ena.ko)                                           │
+│ - multi-queue RX/TX rings                                     │
+│ - RSS hashes flows → RX queue                                 │
+│                        │                                      │
+│                        v                                      │
+│ PCIe function (what you saw):                                 │
+│ ens5 → 0000:00:05.0 ens6 → 0000:00:06.0 ens7 → 00:07.0        │
 └───────────────┬───────────────────────────────────────────────┘
-│ PCIe link
-v
+                │ PCIe link
+                v
 ┌───────────────────────────────────────────────────────────────┐
-│ AWS NITRO HARDWARE (cards/controllers) │
-│ - implements ENA device model over PCIe │
+│ AWS NITRO HARDWARE (cards/controllers)                        │
+│ - implements ENA device model over PCIe                       │
 │ - offload + isolation + DMA to instance memory                │
-│ - virtualization (often SR-IOV under the hood) │
+│ - virtualization (often SR-IOV under the hood)                │
 └───────────────┬───────────────────────────────────────────────┘
-│
-v
+                │ 
+                v
 AWS DATACENTER NETWORK FABRIC (VPC dataplane)
-
+```
 Diagram 2: RSS → queues → MSI-X IRQs → CPU affinity (hot queue/hot CPU)
 (for one interface: ens5)
-
+```
 ENA device (PCI 0000:00:05.0)
 │
 ├─ RSS hash (5-tuple)
 │ ├─ Flow A ───────────────┐
-│ ├─ Flow B ───────┐ │
-│ └─ Flow C ───┐ │ │
-│ v v v
-│ RX q0 RX q1 RX q2 … RX qN
-│ │ │ │ │
-│ MSI-X IRQ MSI-X IRQ MSI-X IRQ MSI-X IRQ
-│ irq#100 irq#101 irq#102 irq#10X
-│ │ │ │ │
+│ ├─ Flow B ───────┐       │
+│ └─ Flow C ───┐   │       │
+│              v   v       v
+│        RX q0 RX q1 RX q2 … RX qN
+│         │     │     │      │
+│     MSI-X IRQ MSI-X IRQ MSI-X IRQ MSI-X IRQ
+│        irq#100 irq#101 irq#102 irq#10X
+│           │      │         │      │
 │ smp_affinity smp_aff. smp_aff. smp_aff.
-│ CPU2 CPU3 CPU10 CPU11
-│ │ │ │ │
+│         CPU2    CPU3     CPU10   CPU11
+│           │      │         │       │
 └───────── NAPI poll batches packets from each queue
-
+```
 Why skew happens
 
 One “elephant” flow maps to one RSS queue → one IRQ/CPU looks hot
