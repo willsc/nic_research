@@ -584,8 +584,9 @@ IRQ affinity / irqbalance / CPU pinning can concentrate many queues onto few CPU
 
 Diagram 3: ENI-level skew (why one NIC is busier)
 Linux routing / policy routing decides egress per destination
+```
 ┌──────────────────────────────────────────────────────────┐
-│ ip route / ip rule choose interface + source IP │
+│ ip route / ip rule choose interface + source IP          │
 └──────────────┬───────────────────────────────┬───────────┘
                │                               │
                v                               v
@@ -595,3 +596,4 @@ peers target ENI A IP?                  peers never hit ENI B?
 source IP selection SG/NACL differences
 │                                               │
 └──→ disproportionate traffic on ens5 can be expected
+```
