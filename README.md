@@ -592,9 +592,9 @@ Linux routing / policy routing decides egress per destination
                │                               │
                v                               v
 ens5 (ENI A)                            ens6 (ENI B)
-default route?                       used only for specific subnet?
+default route?                          used only for specific subnet?
 peers target ENI A IP?                  peers never hit ENI B?
-source IP selection SG/NACL differences
+source IP selection                     SG/NACL differences
 │                                               │
 └──→ disproportionate traffic on ens5 can be expected
 ```
