@@ -443,7 +443,7 @@ App/MPI/NCCL → libfabric (OFI API) → EFA provider → EFA device → AWS fab
 
 So if you’re debugging ENA IRQ skew, “OpenFabrics” is usually not in the datapath unless you’re actually using EFA/libfabric.
 
-8) ENA device numbering: AWS vs Linux
+## 8) ENA device numbering: AWS vs Linux
 There are two numbering systems people mix up:
 AWS numbering (control plane)
 DeviceIndex: attachment order
