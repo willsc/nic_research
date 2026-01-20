@@ -167,13 +167,14 @@ ip -s link show eth0
 or
 sar -n DEV 1
 
-6) Script: Demonstrate mapping (netdev → PCI → MSI-X IRQs → queues → RSS → routing)
+## 6) Script: Demonstrate mapping (netdev → PCI → MSI-X IRQs → queues → RSS → routing)
 Save as nic_mapping_report.sh, then:
-
+```
 chmod +x nic_mapping_report.sh
 ./nic_mapping_report.sh
 ./nic_mapping_report.sh --dest 1.1.1.1 --dest 8.8.8.8
 ./nic_mapping_report.sh --stats
+```
 ```
 #!/usr/bin/env bash
 set -euo pipefail
@@ -427,7 +428,7 @@ echo " - RSS queue histogram + /proc/interrupts (queue/IRQ skew)"
 echo " - IRQ affinity (smp_affinity_list) vs your CPU pinning/isolcpus"
 ```
 
-7) What “open fabric layer” is (and when it matters)
+## 7) What “open fabric layer” is (and when it matters)
 “Open fabric layer” usually refers to OpenFabrics Interfaces (OFI) / libfabric, and sometimes the broader OpenFabrics/RDMA stack.
 
 Key point: it’s not part of the normal ENA (Ethernet) socket path.
@@ -477,7 +478,7 @@ Linux interface → PCI BDF:
 IF=ens5
 readlink -f /sys/class/net/$IF/device
 ethtool -i $IF | egrep 'driver|bus-info'
-9) Confirming SR-IOV (and why “PF?” can happen)
+## 9) Confirming SR-IOV (and why “PF?” can happen)
 Quick checks
 
 AWS-side: EnaSupport=true indicates enhanced networking (AWS states this uses SR-IOV under the hood).
@@ -517,7 +518,7 @@ fi
 done
 done
 
-10) Diagrams: relationships and where skew happens
+## 10) Diagrams: relationships and where skew happens
 Diagram 1: ENI → Linux → PCIe → Nitro → AWS fabric
 AWS CONTROL PLANE (VPC)
 ┌─────────────────────────────────────────────┐
@@ -586,11 +587,11 @@ Linux routing / policy routing decides egress per destination
 ┌──────────────────────────────────────────────────────────┐
 │ ip route / ip rule choose interface + source IP │
 └──────────────┬───────────────────────────────┬───────────┘
-│ │
-v v
-ens5 (ENI A) ens6 (ENI B)
-default route? used only for specific subnet?
-peers target ENI A IP? peers never hit ENI B?
+               │                               │
+               v                               v
+ens5 (ENI A)                            ens6 (ENI B)
+default route?                       used only for specific subnet?
+peers target ENI A IP?                  peers never hit ENI B?
 source IP selection SG/NACL differences
-│ │
+│                                               │
 └──→ disproportionate traffic on ens5 can be expected
