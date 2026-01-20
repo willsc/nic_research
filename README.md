@@ -567,8 +567,8 @@ ENA device (PCI 0000:00:05.0)
 │ ├─ Flow B ───────┐       │
 │ └─ Flow C ───┐   │       │
 │              v   v       v
-│        RX q0 RX q1 RX q2 … RX qN
-│         │     │     │      │
+│        RX q0 RX q1 RX q2  ..... RX qN
+│         │     │     │             │
 │     MSI-X IRQ MSI-X IRQ MSI-X IRQ MSI-X IRQ
 │        irq#100 irq#101 irq#102 irq#10X
 │           │      │         │      │
